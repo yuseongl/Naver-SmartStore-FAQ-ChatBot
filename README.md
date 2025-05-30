@@ -59,17 +59,18 @@ my_rag_chatbot/
 │   │   └── logs.py              # 로그 저장 핸들러
 │   ├── services/
 │   │   ├── embedding.py         # 임베딩 처리
-│   │   ├── retrieval.py         # 유사도 검색 로직
-│   │   ├── generator.py         # 응답 생성기 (GPT)
-│   │   └── logger.py            # 로그 저장기
+│   │   ├── retrieval.py         # 유사도 검색 로직 (BM25, Bi-Encoder, Cross-Encoder)
+│   │   ├── generator.py         # GPT 응답 생성기
+│   │   └── logger.py            # 로그 기록 모듈
 │   ├── core/
-│   │   ├── config.py            # 설정값 로딩
-│   │   └── chroma_client.py     # ChromaDB 연결
+│   │   ├── config.py            # 설정값 불러오기 (.env)
+│   │   └── chroma_client.py     # ChromaDB 클라이언트
 │   ├── models/
-│   │   └── schemas.py           # pydantic 스키마
-│   └── example_docs/faq.txt     # 스마트스토어 FAQ 데이터
-├── chroma_db/                   # 벡터 DB 디렉토리
-├── chat_log.csv                 # 로그 저장 파일
+│   │   └── schemas.py           # Pydantic 스키마 정의
+│   └── example_docs/
+│       └── faq.txt              # 스마트스토어 FAQ 문서
+├── chroma_db/                   # 벡터 DB 저장 디렉토리
+├── chat_log.csv                 # 질의응답 로그 저장 파일
 ├── requirements.txt
 └── README.md
 
