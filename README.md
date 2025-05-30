@@ -119,3 +119,8 @@ uvicorn main:app --reload
 cd ../frontend
 streamlit run streamlit_app.py
 ```
+
+### 8. redis 서버 실행행
+```bash
+redis-server
+```
