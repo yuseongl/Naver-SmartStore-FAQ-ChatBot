@@ -69,14 +69,49 @@ my_rag_chatbot/
 ├── chat_log.csv                 # 질의응답 로그 저장 파일
 ├── requirements.txt
 └── README.md
-
+```
 
 ## 설치 방법
+```bash
+# 1. 저장소 클론
+git clone https://github.com/<YOUR_ID>/Naver-SmartStore-FAQ-ChatBot.git
+cd Naver-SmartStore-FAQ-ChatBot
+```
 
 ```bash
-# 1. 가상환경 생성 및 활성화
-python -m venv venv
-source venv/bin/activate  # Windows는 venv\Scripts\activate
-
 # 2. 패키지 설치
 pip install -r requirements.txt
+```
+
+```bash
+# 3. 필수 디렉토리 생성
+mkdir -p app/chroma_db
+mkdir -p app/docs
+```
+
+```bash
+# 4. FAQ 데이터 파일 준비
+# 파일을 app/docs/final_result.pkl 위치에 넣어주세요:
+app/
+└── docs/
+    └── final_result.pkl
+```
+
+```bash
+# 5. OpenAI API 키 설정
+# app/ 디렉토리 안에 .env 파일을 만들고 아래처럼 작성하세요. 
+# ※실제 키는 OpenAI에서 발급받아야 합니다.
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+```bash
+# 6. API 서버 실행
+cd app
+uvicorn main:app --reload
+```
+
+```bash
+# 7. 프론트엔드 실행 (Streamlit)
+cd ../frontend
+streamlit run streamlit_app.py
+```
