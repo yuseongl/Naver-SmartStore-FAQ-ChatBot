@@ -53,7 +53,7 @@ my_rag_chatbot/
 │   ├── api/
 │   │   ├── ask.py               # 질의응답 API 핸들러
 │   │   └── logs.py              # 로그 저장 핸들러
-│   ├── chroma_db/                
+│   ├── chroma_db                
 │   ├── services/
 │   │   ├── embedding.py         # 임베딩 처리
 │   │   ├── retrieval.py         # 유사도 검색 로직 (BM25, Bi-Encoder, Cross-Encoder)
