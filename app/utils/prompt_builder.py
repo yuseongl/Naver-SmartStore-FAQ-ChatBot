@@ -1,13 +1,18 @@
 from string import Template
+from functools import lru_cache
 import os
 
 TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates/system_prompt.txt")
 
-def build_system_prompt(context: str, question: str) -> str:
-    """네이버 스마트스토어 상담원용 시스템 프롬프트 생성"""
+@lru_cache(maxsize=2000)
+def load_template() -> Template:
     with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
-        template = Template(f.read())   
-    return template.safe_substitute(context=context, question=question)
+        return Template(f.read())
+
+def build_system_prompt(context: str, question: str, history_prompt:str) -> str:
+    """네이버 스마트스토어 상담원용 시스템 프롬프트 생성"""
+    template = template = load_template()   
+    return template.safe_substitute(context=context, question=question, history_prompt=history_prompt)
 
 def build_history_prompt(history: list[dict]) -> str:
     """Redis에서 불러온 대화 기록을 프롬프트 문자열로 정리"""
