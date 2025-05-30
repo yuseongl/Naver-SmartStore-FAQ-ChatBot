@@ -58,7 +58,7 @@ my_rag_chatbot/
 │   ├── api/
 │   │   ├── ask.py               # 질의응답 API 핸들러
 │   │   └── logs.py              # 로그 저장 핸들러
-│   ├── chroma_db                
+│   ├── chroma_db                # 벡터 DB 저장 디렉토리
 │   ├── services/
 │   │   ├── embedding.py         # 임베딩 처리
 │   │   ├── retrieval.py         # 유사도 검색 로직 (BM25, Bi-Encoder, Cross-Encoder)
@@ -72,9 +72,16 @@ my_rag_chatbot/
 │   │   └── *.pkl                # FAQ 데이터 파일
 │   ├── models/
 │   │   └── schemas.py           # Pydantic 스키마 정의
+│   ├── utils/
+│   │   ├── templates/     
+│   │   ├──├── rewrite_prompt.txt  # 재기술 프롬프트 템플릿 
+│   │   ├──└── system_prompt.py    # 생성 프롬프트 템플릿 
+│   │   ├── prompt_builder.py      # 프롬프트 빌더
+│   │   ├── reject_filters.py      # 질의 히스토리 저장 필터
+│   │   ├── reject_phrases.txt     # 필터 응답 모음
+│   │   └── token_streamer.py      # 스트리머 생성   
 │   └── example_docs/
 │       └── faq.txt              # 스마트스토어 FAQ 문서
-├── chroma_db/                   # 벡터 DB 저장 디렉토리
 ├── chat_log.csv                 # 질의응답 로그 저장 파일
 ├── requirements.txt
 └── README.md
