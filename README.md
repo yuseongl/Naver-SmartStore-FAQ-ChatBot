@@ -53,14 +53,18 @@ my_rag_chatbot/
 │   ├── api/
 │   │   ├── ask.py               # 질의응답 API 핸들러
 │   │   └── logs.py              # 로그 저장 핸들러
+│   ├── chroma_db/                
 │   ├── services/
 │   │   ├── embedding.py         # 임베딩 처리
 │   │   ├── retrieval.py         # 유사도 검색 로직 (BM25, Bi-Encoder, Cross-Encoder)
 │   │   ├── generator.py         # GPT 응답 생성기
+│   │   ├── session.py           # 대화 내용 저장
 │   │   └── logger.py            # 로그 기록 모듈
 │   ├── core/
 │   │   ├── config.py            # 설정값 불러오기 (.env)
 │   │   └── chroma_client.py     # ChromaDB 클라이언트
+│   ├── docs/
+│   │   └── *.pkl                # FAQ 데이터 파일
 │   ├── models/
 │   │   └── schemas.py           # Pydantic 스키마 정의
 │   └── example_docs/
