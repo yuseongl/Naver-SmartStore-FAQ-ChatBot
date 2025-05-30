@@ -41,11 +41,10 @@ async def ask_q(input: QueryInput):
     
     # Build the prompt for the response
     history_prompt = build_history_prompt(history)
-    system_prompt = build_system_prompt(context, rewrited_query)
-    final_prompt = f"{history_prompt}\n{system_prompt}"
-    
+    system_prompt = build_system_prompt(context, rewrited_query, history_prompt)
+    print(system_prompt)
     return StreamingResponse(
-        stream_response_with_saving(final_prompt, session_id, query), 
+        stream_response_with_saving(system_prompt, session_id, query), 
         media_type="text/plain"
         )
     
