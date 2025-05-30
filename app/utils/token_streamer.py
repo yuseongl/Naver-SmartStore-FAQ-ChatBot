@@ -1,5 +1,6 @@
 from services.session import save_session
 from services.generator import generate_response
+from .reject_filters import is_reject_message
 
 async def stream_response_with_saving(final_prompt, session_id, query):
     """
@@ -16,6 +17,8 @@ async def stream_response_with_saving(final_prompt, session_id, query):
         full_response += token  # 토큰을 누적
         yield token
 
-    # save the message    
-    await save_session(session_id, '사용자', message=query)
-    await save_session(session_id, '상담원', message=full_response)
+    # history save reject filter
+    if not is_reject_message(full_response):
+        # save the message    
+        await save_session(session_id, '사용자', message=query)
+        await save_session(session_id, '상담원', message=full_response)
