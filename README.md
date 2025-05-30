@@ -12,6 +12,7 @@ FastAPI로 구성되어 있으며, 의미 기반 검색과 OpenAI 모델을 활�
 - 하이브리드 검색 방식 지원
 - OpenAI API 기반 응답 생성
 - 질의응답 로그 저장 기능
+- 질문 재기술 기능
 
 
 ## 기술 스택
@@ -19,8 +20,8 @@ FastAPI로 구성되어 있으며, 의미 기반 검색과 OpenAI 모델을 활�
 - Python 3.10+
 - FastAPI
 - ChromaDB
+- Redis
 - OpenAI API (`gpt-4`, `text-embedding-3-small`)
-- LangChain (옵션)
 - Streamlit (클라이언트 UI)
 - Uvicorn (서버 실행)
 
@@ -29,21 +30,25 @@ FastAPI로 구성되어 있으며, 의미 기반 검색과 OpenAI 모델을 활�
 
 이 프로젝트는 RAG 기반 질의응답 시스템으로, 다음과 같은 검색 구조를 사용합니다:
 
-1. **BM25**  
-   - 전통적인 키워드 기반 검색색
+1. **Query Rewriting**  
+   - 질문 적합성 판단
+   - 응답 친화적 문장으로 질문 재구성
+
+2. **BM25**  
+   - 전통적인 키워드 기반 검색
    - FAQ 텍스트에서 초기 후보군 n개 추출
 
-2. **Bi-Encoder**   
+3. **Bi-Encoder**   
    - 문장 임베딩 기반 Dense Vector 검색
    - 사용자 쿼리와 문서 간의 의미 유사도 계산
    - 빠른 벡터 검색을 위해 ChromaDB 사용
 
-3. **Cross-Encoder**  
+4. **Cross-Encoder**  
    - 상위 후보군 문서에 대해 정밀한 쿼리-문서 재평가
    - 의미적 정확도를 높이기 위해 최종 reranking 수행
 
 > 전체 파이프라인:
-> **사용자 질문 → [BM25 or Bi-Encoder] → 후보군 상위 N개 → Cross-Encoder rerank → GPT 응답 생성**
+> **사용자 질문 → 질문 재기술 → [BM25 or Bi-Encoder] → 후보군 상위 N개 → Cross-Encoder rerank → GPT 응답 생성**
 
 ## 모듈 구조
 ```bash
