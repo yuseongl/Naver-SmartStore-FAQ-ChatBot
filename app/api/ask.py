@@ -5,6 +5,7 @@ from models.schemas import QueryInput
 from core.chroma_client import get_chroma_collections
 from services.retrieval import retrieve_context
 from services.session import get_session_history
+from services.rewriter_ import rewrite_if_needed
 from utils.prompt_builder import build_history_prompt, build_system_prompt
 from utils.token_streamer import stream_response_with_saving
 
@@ -28,6 +29,9 @@ async def ask_q(input: QueryInput):
     query = input.question
     session_id = input.session_id
 
+    # rewrite the user's question
+    rewrited_query = await rewrite_if_needed(query)
+    print("rewrite:",rewrited_query)
     # Save the user's question in the session
     # Retrieve context from the Chroma collection
     history = await get_session_history(session_id)
@@ -37,7 +41,7 @@ async def ask_q(input: QueryInput):
     
     # Build the prompt for the response
     history_prompt = build_history_prompt(history)
-    system_prompt = build_system_prompt(context, query)
+    system_prompt = build_system_prompt(context, rewrited_query)
     final_prompt = f"{history_prompt}\n{system_prompt}"
     
     return StreamingResponse(

@@ -21,4 +21,4 @@ def build_history_prompt(history: list[dict]) -> str:
 # app/api/ask.py 내 사용 예시:
 # from utils.prompt_builder import build_system_prompt, build_history_prompt
 # context_lines = build_history_prompt(history)
-# final_prompt = f"{context_lines}\n\n{build_system_prompt(context, query)}"
+# final_prompt = f"{context_lines}\n\n{build_system_prompt(context, query, rewrited_query)}"
