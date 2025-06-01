@@ -62,6 +62,7 @@ my_rag_chatbot/
 │   ├── services/
 │   │   ├── embedding.py         # 임베딩 처리
 │   │   ├── retrieval.py         # 유사도 검색 로직 (BM25, Bi-Encoder, Cross-Encoder)
+│   │   ├── rewriter.py          # 질문 검증 후 질문 재기술(생성성)
 │   │   ├── generator.py         # GPT 응답 생성기
 │   │   ├── session.py           # 대화 내용 저장
 │   │   └── logger.py            # 로그 기록 모듈
