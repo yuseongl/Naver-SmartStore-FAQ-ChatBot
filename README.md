@@ -60,11 +60,13 @@ my_rag_chatbot/
 │   │   └── logs.py              # 로그 저장 핸들러
 │   ├── chroma_db                # 벡터 DB 저장 디렉토리
 │   ├── services/
+│   │   ├── prompting/
+│   │   ├── └── prompt_builder.py
 │   │   ├── embedding.py         # 임베딩 처리
 │   │   ├── retrieval.py         # 유사도 검색 로직 (BM25, Bi-Encoder, Cross-Encoder)
 │   │   ├── rewriter.py          # 질문 검증 후 질문 재기술(생성성)
 │   │   ├── generator.py         # GPT 응답 생성기
-│   │   ├── session.py           # 대화 내용 저장
+│   │   ├── chat_session.py           # 대화 내용 저장
 │   │   └── logger.py            # 로그 기록 모듈
 │   ├── core/
 │   │   ├── config.py            # 설정값 불러오기 (.env)
@@ -77,10 +79,8 @@ my_rag_chatbot/
 │   │   ├── templates/     
 │   │   ├──├── rewrite_prompt.txt  # 재기술 프롬프트 템플릿 
 │   │   ├──└── system_prompt.py    # 생성 프롬프트 템플릿 
-│   │   ├── prompt_builder.py      # 프롬프트 빌더
 │   │   ├── reject_filters.py      # 질의 히스토리 저장 필터
-│   │   ├── reject_phrases.txt     # 필터 응답 모음
-│   │   └── token_streamer.py      # 스트리머 생성   
+│   │   └── reject_phrases.txt     # 필터 응답 모음 
 │   └── example_docs/
 │       └── faq.txt              # 스마트스토어 FAQ 문서
 ├── chat_log.csv                 # 질의응답 로그 저장 파일
