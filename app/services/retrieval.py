@@ -3,9 +3,9 @@ import torch
 import asyncio
 import numpy as np
 from rank_bm25 import BM25Okapi
-from services.embedding import get_all_embeddings_async
+from services import get_all_embeddings_async
 from sentence_transformers import CrossEncoder
-from core.config import RERANKING_MODEL
+from core import RERANKING_MODEL
 
 # CrossEncoder 로드
 reranker = CrossEncoder(

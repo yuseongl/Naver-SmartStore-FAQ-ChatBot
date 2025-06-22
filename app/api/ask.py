@@ -1,15 +1,15 @@
 from openai import AsyncOpenAI
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
-from models.schemas import QueryInput
-from core.chroma_client import get_chroma_collections
-from services.retrieval import retrieve_context
-from services.chat_session import get_session_history
-from services.rewriter import rewrite_if_needed
-from services.prompting.prompt_builder import build_history_prompt, build_system_prompt
-from services.chat_session import save_session
-from services.generator import generate_response
-from utils.reject_filters import is_reject_message
+from models import QueryInput
+from core import get_chroma_collections
+from services import retrieve_context
+from services import get_session_history
+from services import rewrite_if_needed
+from services.prompting import build_history_prompt, build_system_prompt
+from services import save_session
+from services import generate_response
+from utils import is_reject_message
 
 from core.config import OPEN_AI_API_KEY
 
@@ -17,7 +17,6 @@ router = APIRouter()
 client = AsyncOpenAI(api_key=OPEN_AI_API_KEY)
 
 async def stream_response_with_saving(final_prompt, session_id, query):
-    
     """
     Generate a response token by token and save the session.
     Args:

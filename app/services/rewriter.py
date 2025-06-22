@@ -3,7 +3,7 @@ import os
 from string import Template
 from openai import AsyncOpenAI
 from functools import lru_cache
-from core.config import OPEN_AI_API_KEY
+from core import OPEN_AI_API_KEY
 
 TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "/home/leeus/work/personal/Naver-SmartStore-FAQ-ChatBot/app/utils/templates/rewrite_prompt.txt")
 
