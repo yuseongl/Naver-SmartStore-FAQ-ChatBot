@@ -15,9 +15,15 @@ jobs:
         run: pip install uv
       - name: Install dependencies
         run: uv pip install --system -r requirements.txt
+      - name: Install ruff
+        run: uv pip install --system ruff
       - name: Run ruff
         run: ruff check . ; echo "Ruff check completed"
+      - name: Install black
+        run: uv pip install --system black
       - name: Run black
         run: black --check . ; echo "Black check completed"
+      - name: Install isort
+        run: uv pip install --system isort
       - name: Run isort
         run: isort --check . ; echo "isort check completed"
