@@ -3,9 +3,8 @@
 *.csv
 *.pkl
 *.ipynb
-*.sqlite3
-a8f67d77*
-f5ce56*
+chroma_db/
+docs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
