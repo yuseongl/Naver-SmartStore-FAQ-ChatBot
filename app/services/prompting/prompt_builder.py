@@ -2,7 +2,7 @@ from string import Template
 from functools import lru_cache
 import os
 
-TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates/system_prompt.txt")
+TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "../../utils/templates/system_prompt.txt")
 
 @lru_cache(maxsize=2000)
 def load_template() -> Template:
@@ -21,6 +21,7 @@ def build_history_prompt(history: list[dict]) -> str:
         role = msg.get("role", "user").capitalize()
         message = msg.get("message", "")
         context_lines += f"{role}: {message}\n"
+        break
     return context_lines.strip()
 
 # app/api/ask.py 내 사용 예시:

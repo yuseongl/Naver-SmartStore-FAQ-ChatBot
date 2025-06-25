@@ -12,7 +12,7 @@ async def generate_response(prompt: str) -> str:
     from api.ask import client
 
     response = await client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         stream=True
     )
