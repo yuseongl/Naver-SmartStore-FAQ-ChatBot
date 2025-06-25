@@ -17,6 +17,7 @@ from utils import is_reject_message
 router = APIRouter()
 client = AsyncOpenAI(api_key=OPEN_AI_API_KEY)
 
+
 async def stream_response_with_saving(final_prompt, session_id, query):
     """
     Generate a response token by token and save the session.
@@ -35,8 +36,9 @@ async def stream_response_with_saving(final_prompt, session_id, query):
     # history save reject filter
     if not is_reject_message(full_response):
         # save the message
-        await save_session(session_id, '사용자', message=query)
-        await save_session(session_id, '상담원', message=full_response)
+        await save_session(session_id, "사용자", message=query)
+        await save_session(session_id, "상담원", message=full_response)
+
 
 @router.post("/ask/stream")
 async def ask_q(input: QueryInput):
@@ -66,7 +68,5 @@ async def ask_q(input: QueryInput):
     print(system_prompt)
     return StreamingResponse(
         stream_response_with_saving(system_prompt, session_id, query),
-        media_type="text/plain"
-        )
-
-
+        media_type="text/plain",
+    )

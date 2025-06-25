@@ -1,4 +1,3 @@
-
 import asyncio
 
 import numpy as np
@@ -9,15 +8,15 @@ from sentence_transformers import CrossEncoder
 
 # CrossEncoder 로드
 reranker = CrossEncoder(
-    RERANKING_MODEL,
-    device="cuda" if torch.cuda.is_available() else "cpu"
-    )
+    RERANKING_MODEL, device="cuda" if torch.cuda.is_available() else "cpu"
+)
 
 loop = asyncio.get_event_loop()
 
 _bm25 = None
 _corpus = None
 _all_docs = None
+
 
 def _init_bm25(full_collection):
     """
@@ -30,7 +29,10 @@ def _init_bm25(full_collection):
         _corpus = [doc.split() for doc in _all_docs]
         _bm25 = BM25Okapi(_corpus)
 
-async def retrieve_context(query: str, collections: list, top_k: int = 10, top_n: int = 5) -> str:
+
+async def retrieve_context(
+    query: str, collections: list, top_k: int = 10, top_n: int = 5
+) -> str:
     """
     Retrieve and rerank relevant context from Chroma collection using a reranker.
 
@@ -49,7 +51,7 @@ async def retrieve_context(query: str, collections: list, top_k: int = 10, top_n
 
     # 임베딩으로 top_k 문서 검색
     q_embedding = (await get_all_embeddings_async([query]))[0]
-    results = collections[0].query(query_embeddings=[q_embedding], n_results=top_k//2)
+    results = collections[0].query(query_embeddings=[q_embedding], n_results=top_k // 2)
     matched_ids = results["ids"][0]  # List[str]
     sem_docs = collections[1].get(ids=matched_ids)["documents"]
 
@@ -73,9 +75,10 @@ async def retrieve_context(query: str, collections: list, top_k: int = 10, top_n
     scores = await loop.run_in_executor(None, reranker.predict, query_doc_pairs)
 
     # 4. 유사도 기준 상위 top_n 문서 선택
-    top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:top_n]
+    top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[
+        :top_n
+    ]
     top_docs = [combined[i] for i in top_indices]
 
     # 5. 최종 문맥 반환
     return "\n\n".join(top_docs)
-

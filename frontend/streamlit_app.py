@@ -35,13 +35,9 @@ if question:
         # 스트리밍 요청
         with requests.post(
             "http://localhost:8000/ask/stream",
-            json={
-                "session_id": st.session_state.session_id,
-                "question": question
-                },
+            json={"session_id": st.session_state.session_id, "question": question},
             stream=True,
         ) as response:
-
             if response.status_code != 200:
                 message_placeholder.error("⚠️ 질문 처리 중 오류 발생")
             else:
@@ -56,7 +52,7 @@ if question:
     # 대화 기록 저장
     st.session_state.chat_history.append(
         {"role": "assistant", "content": full_response}
-        )
+    )
 
 # 사이드바 - 로그
 st.sidebar.title("📜 로그 기록")

@@ -11,8 +11,10 @@ from core.config import (
 
 redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 
+
 async def _session(session_id: str) -> list:
     return f"{SESSION_KEY_PREFIX}{session_id}"
+
 
 async def save_session(session_id: str, role: str, message: str):
     """
@@ -26,8 +28,11 @@ async def save_session(session_id: str, role: str, message: str):
     """
     session_key = await _session(session_id)
     messages = {"role": role, "message": message}
-    redis_client.rpush(session_key, json.dumps(messages,ensure_ascii=False))
-    redis_client.ltrim(session_key, 0, MAX_SESSION_LENGTH - 1)  # Keep only the last MAX_SESSION_LENGTH items
+    redis_client.rpush(session_key, json.dumps(messages, ensure_ascii=False))
+    redis_client.ltrim(
+        session_key, 0, MAX_SESSION_LENGTH - 1
+    )  # Keep only the last MAX_SESSION_LENGTH items
+
 
 async def get_session_history(session_id: str) -> list[dict]:
     """

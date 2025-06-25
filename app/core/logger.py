@@ -13,13 +13,24 @@ def save_log(question: str, context: str, response: str):
     with open(LOG_PATH, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if new:
-            writer.writerow(["timestamp", "question", "retrieved_context", "ai_response", "feedback"])
-        writer.writerow([
-            datetime.datetime.now().isoformat(),
-            question,
-            context,
-            response,
-        ])
+            writer.writerow(
+                [
+                    "timestamp",
+                    "question",
+                    "retrieved_context",
+                    "ai_response",
+                    "feedback",
+                ]
+            )
+        writer.writerow(
+            [
+                datetime.datetime.now().isoformat(),
+                question,
+                context,
+                response,
+            ]
+        )
+
 
 def get_logs() -> list:
     """

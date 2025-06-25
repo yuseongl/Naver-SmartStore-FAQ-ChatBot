@@ -11,22 +11,31 @@ semaphore = Semaphore(5)
 
 ENCODING = tiktoken.encoding_for_model(ENBEDDING_MODEL)
 
+
 # 텍스트의 토큰 수 계산
 def count_tokens(text: str) -> int:
     return len(ENCODING.encode(text))
 
+
 # 텍스트를 토큰 기준으로 안전하게 분할
 def split_text_into_chunks(text: str, chunk_token_limit: int = CHUNK_SIZE) -> list[str]:
     tokens = ENCODING.encode(text)
-    return [ENCODING.decode(tokens[i:i + chunk_token_limit]) for i in range(0, len(tokens), chunk_token_limit)]
+    return [
+        ENCODING.decode(tokens[i : i + chunk_token_limit])
+        for i in range(0, len(tokens), chunk_token_limit)
+    ]
+
 
 # 벡터 정규화
 def normalize_vector(vec: list[float]) -> list[float]:
     norm = np.linalg.norm(vec)
     return (np.array(vec) / norm).tolist() if norm != 0 else vec
 
+
 # 개별 텍스트 또는 분할된 청크들을 비동기로 임베딩
-async def get_embedding_with_chunking(text: str, max_retries: int = 3, timeout: int = 10) -> list[float]:
+async def get_embedding_with_chunking(
+    text: str, max_retries: int = 3, timeout: int = 10
+) -> list[float]:
     if count_tokens(text) <= MAX_TOKENS:
         return await get_embedding(text, max_retries, timeout)
 
@@ -41,27 +50,29 @@ async def get_embedding_with_chunking(text: str, max_retries: int = 3, timeout: 
 
     return list(np.mean(valid_embeddings, axis=0))
 
+
 # 기본 임베딩 함수
-async def get_embedding(text: str, max_retries: int = 3, timeout: int = 10) -> list[float]:
+async def get_embedding(
+    text: str, max_retries: int = 3, timeout: int = 10
+) -> list[float]:
     from api.ask import client
+
     for attempt in range(1, max_retries + 1):
         try:
             print(text)
             async with semaphore:
                 response = await asyncio.wait_for(
-                    client.embeddings.create(
-                        input=text,
-                        model=ENBEDDING_MODEL
-                    ),
-                    timeout=timeout
+                    client.embeddings.create(input=text, model=ENBEDDING_MODEL),
+                    timeout=timeout,
                 )
                 return normalize_vector(response.data[0].embedding)
         except asyncio.TimeoutError:
             print(f"[Timeout] {attempt}/{max_retries}회차 - '{text[:30]}...'")
         except Exception as e:
             print(f"[Exception] {attempt}/{max_retries}회차 - '{text[:30]}...': {e}")
-        await asyncio.sleep(2 ** attempt)
+        await asyncio.sleep(2**attempt)
     return []
+
 
 # 전체 텍스트 리스트에 대해 비동기 임베딩 실행
 async def get_all_embeddings_async(text_list: list[str]) -> list[list[float]]:

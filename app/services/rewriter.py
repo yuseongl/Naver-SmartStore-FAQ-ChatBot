@@ -5,10 +5,17 @@ from string import Template
 from core.config import OPEN_AI_API_KEY
 from openai import AsyncOpenAI
 
-TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "../", "utils", "templates", "rewrite_prompt.txt")
+TEMPLATE_PATH = os.path.join(
+    os.path.dirname(__file__), "../", "utils", "templates", "rewrite_prompt.txt"
+)
 
 client = AsyncOpenAI(api_key=OPEN_AI_API_KEY)
-KEYWORDS = [r"\b스마트\s?스토어\b", r"\b스토어센터\b", r"\b스토어\s?개설\b", r"\b네이버\s?쇼핑\b"]
+KEYWORDS = [
+    r"\b스마트\s?스토어\b",
+    r"\b스토어센터\b",
+    r"\b스토어\s?개설\b",
+    r"\b네이버\s?쇼핑\b",
+]
 _pat = re.compile("|".join(KEYWORDS), re.I)
 
 
@@ -18,16 +25,18 @@ def build_write_prompt(context: str) -> str:
         template = Template(f.read())
     return template.safe_substitute(context=context)
 
-async def _rewriter(query:str) -> str:
+
+async def _rewriter(query: str) -> str:
     resp = await client.chat.completions.create(
-        model= "gpt-4o-mini",
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": query}],
-        max_tokens=200
+        max_tokens=200,
     )
 
     return resp.choices[0].message.content.strip()
 
-async def rewrite_if_needed(q:str) -> str:
+
+async def rewrite_if_needed(q: str) -> str:
     if _pat.search(q):
         return q
 

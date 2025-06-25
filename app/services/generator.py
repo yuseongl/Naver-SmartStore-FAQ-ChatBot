@@ -1,4 +1,3 @@
-
 async def generate_response(prompt: str) -> str:
     """
     Generate a response from OpenAI's GPT model based on the provided prompt.
@@ -12,9 +11,7 @@ async def generate_response(prompt: str) -> str:
     from api.ask import client
 
     response = await client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        stream=True
+        model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}], stream=True
     )
 
     async for chunk in response:
