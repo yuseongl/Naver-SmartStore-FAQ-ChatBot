@@ -18,7 +18,7 @@ jobs:
       - name: Install ruff
         run: uv pip install --system ruff
       - name: Run ruff
-        run: ruff check . --fix ; echo "Ruff check completed"
+        run: ruff check . --unsafe-fixes ; echo "Ruff check completed"
       - name: Install black
         run: uv pip install --system black
       - name: Run black
