@@ -14,7 +14,7 @@ jobs:
       - name: Install uv
         run: pip install uv
       - name: Install dependencies
-        run: uv pip install .[dev]
+        run: uv pip install --system -r requirements.txt
       - name: Run ruff
         run: ruff check . ; echo "Ruff check completed"
       - name: Run black
