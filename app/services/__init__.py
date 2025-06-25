@@ -6,11 +6,12 @@ from .generator import generate_response
 from .chat_session import get_session_history
 from .rewriter import rewrite_if_needed
 
+
 __all__ = [
     "retrieve_context",
     "get_embedding",
     "get_all_embeddings_async",
     "generate_response",
     "get_session_history",
-    "rewrite_if_needed"
+    "rewrite_if_needed",
 ]

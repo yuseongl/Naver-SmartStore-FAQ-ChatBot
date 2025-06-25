@@ -3,9 +3,8 @@ import torch
 import asyncio
 import numpy as np
 from rank_bm25 import BM25Okapi
-from services import get_all_embeddings_async
 from sentence_transformers import CrossEncoder
-from core import RERANKING_MODEL
+from core.config import RERANKING_MODEL
 
 # CrossEncoder 로드
 reranker = CrossEncoder(
@@ -43,6 +42,8 @@ async def retrieve_context(query: str, collections: list, top_k: int = 10, top_n
     Returns:
         str: Concatenated top_n document texts.
     """
+    from . import get_all_embeddings_async
+    
     _init_bm25(collections[1])  # Initialize BM25 with the full collection
 
     # 임베딩으로 top_k 문서 검색

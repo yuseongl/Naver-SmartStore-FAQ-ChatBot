@@ -2,7 +2,7 @@ import asyncio
 import numpy as np
 from tqdm.asyncio import tqdm_asyncio
 from asyncio import Semaphore
-from core import MAX_TOKENS, CHUNK_SIZE, ENBEDDING_MODEL
+from core.config import MAX_TOKENS, CHUNK_SIZE, ENBEDDING_MODEL
 
 import tiktoken  # 토큰 계산을 위한 모듈
 

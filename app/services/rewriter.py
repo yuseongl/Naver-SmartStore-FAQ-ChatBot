@@ -3,9 +3,9 @@ import os
 from string import Template
 from openai import AsyncOpenAI
 from functools import lru_cache
-from core import OPEN_AI_API_KEY
+from core.config import OPEN_AI_API_KEY
 
-TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "/home/leeus/work/personal/Naver-SmartStore-FAQ-ChatBot/app/utils/templates/rewrite_prompt.txt")
+TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "../", "utils", "templates", "rewrite_prompt.txt")
 
 client = AsyncOpenAI(api_key=OPEN_AI_API_KEY)
 KEYWORDS = [r"\b스마트\s?스토어\b", r"\b스토어센터\b", r"\b스토어\s?개설\b", r"\b네이버\s?쇼핑\b"]

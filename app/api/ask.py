@@ -7,7 +7,7 @@ from services import retrieve_context
 from services import get_session_history
 from services import rewrite_if_needed
 from services.prompting import build_history_prompt, build_system_prompt
-from services import save_session
+from services import get_session_history
 from services import generate_response
 from utils import is_reject_message
 
@@ -34,8 +34,8 @@ async def stream_response_with_saving(final_prompt, session_id, query):
     # history save reject filter
     if not is_reject_message(full_response):
         # save the message    
-        await save_session(session_id, '사용자', message=query)
-        await save_session(session_id, '상담원', message=full_response)
+        await get_session_history(session_id, '사용자', message=query)
+        await get_session_history(session_id, '상담원', message=full_response)
 
 @router.post("/ask/stream")
 async def ask_q(input: QueryInput):

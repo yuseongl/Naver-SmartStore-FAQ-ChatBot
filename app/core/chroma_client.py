@@ -1,7 +1,7 @@
 import pickle
 import re
 import chromadb
-from core import CHROMA_DIR, TITLE_COLLECTION_NAME, FULL_COLLECTION_NAME
+from core.config import CHROMA_DIR, TITLE_COLLECTION_NAME, FULL_COLLECTION_NAME
 from services import get_all_embeddings_async
 
 chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
