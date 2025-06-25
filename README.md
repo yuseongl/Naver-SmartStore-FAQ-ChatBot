@@ -24,6 +24,8 @@ FastAPI로 구성되어 있으며, 의미 기반 검색과 OpenAI 모델을 활�
 - OpenAI API (`gpt-4`, `text-embedding-3-small`)
 - Streamlit (클라이언트 UI)
 - Uvicorn (서버 실행)
+- uv (패키지/환경 관리)
+- ruff, black, isort (코드 스타일 자동화)
 
 
 ## 검색 구조 (Retrieval Architecture)
