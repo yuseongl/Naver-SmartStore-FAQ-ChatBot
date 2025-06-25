@@ -1,4 +1,3 @@
-
 name: Lint
 
 on: [push, pull_request]
@@ -8,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -15,15 +16,23 @@ jobs:
         run: pip install uv
       - name: Install dependencies
         run: uv pip install --system -r requirements.txt
-      - name: Install ruff
-        run: uv pip install --system ruff
-      - name: Run ruff
-        run: ruff check . --unsafe-fixes --fix
-      - name: Install black
-        run: uv pip install --system black
-      - name: Run black
+      - name: Install linters
+        run: |
+          uv pip install --system ruff black isort
+      - name: Run ruff with auto-fix
+        run: ruff check . --fix
+      - name: Run isort with auto-fix
+        run: isort .
+      - name: Run black with auto-fix
+        run: black .
+      - name: Commit lint fixes (if any)
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: auto-format code with ruff, black, isort [auto]"
+          branch: ${{ github.head_ref }}
+      - name: Check ruff (fail if 문제 남음)
+        run: ruff check .
+      - name: Check black (fail if 문제 남음)
         run: black --check .
-      - name: Install isort
-        run: uv pip install --system isort
-      - name: Run isort
-        run: isort --check . 
+      - name: Check isort (fail if 문제 남음)
+        run: isort --check .
