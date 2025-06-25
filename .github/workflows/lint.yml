@@ -18,12 +18,12 @@ jobs:
       - name: Install ruff
         run: uv pip install --system ruff
       - name: Run ruff
-        run: ruff check . --unsafe-fixes ; echo "Ruff check completed"
+        run: ruff check . --unsafe-fixes
       - name: Install black
         run: uv pip install --system black
       - name: Run black
-        run: black --check . ; echo "Black check completed"
+        run: black --check . ;
       - name: Install isort
         run: uv pip install --system isort
       - name: Run isort
-        run: isort --check . ; echo "isort check completed"
+        run: isort --check . ; 
