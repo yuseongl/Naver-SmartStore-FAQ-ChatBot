@@ -5,6 +5,8 @@
 *.ipynb
 chroma_db/
 docs/
+*.egg-info/
+*.whl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

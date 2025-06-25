@@ -1,0 +1,36 @@
+[project]
+name = "naver-smartstore-faq-chatbot"
+version = "0.1.0"
+description = "네이버 스마트스토어 FAQ RAG 챗봇"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "openai",
+    "chromadb",
+    "pydantic",
+    "python-dotenv",
+    "streamlit",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "black",
+    "isort",
+    "pytest",
+]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+select = ["E", "F", "I", "W"]
+line-length = 88
+exclude = ["__init__.py"]
+
+[tool.setuptools.packages.find]
+include = ["app*", "frontend*"]
