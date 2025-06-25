@@ -17,7 +17,7 @@ async def _session(session_id: str) -> list:
 async def save_session(session_id: str, role: str, message: str):
     """
     Save the chat session to Redis.
-    
+
     Args:
         session_id (str): Unique identifier for the session.
         question (str): User's question.
@@ -32,10 +32,10 @@ async def save_session(session_id: str, role: str, message: str):
 async def get_session_history(session_id: str) -> list[dict]:
     """
     Retrieve the chat session history from Redis.
-    
+
     Args:
         session_id (str): Unique identifier for the session.
-    
+
     Returns:
         list[dict]: List of messages in the session.
     """

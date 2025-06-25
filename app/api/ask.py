@@ -42,10 +42,10 @@ async def stream_response_with_saving(final_prompt, session_id, query):
 async def ask_q(input: QueryInput):
     """
     Handle the user's question, retrieve context, generate a response, and log the interaction.
-    
+
     Args:
         input (QueryInput): The user's question.
-    
+
     Returns:
         dict: The AI's response and the retrieved context.
     """

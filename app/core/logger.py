@@ -24,7 +24,7 @@ def save_log(question: str, context: str, response: str):
 def get_logs() -> list:
     """
     Retrieve all chat logs from the CSV file.
-    
+
     Returns:
         list: A list of dictionaries containing the chat logs.
     """
