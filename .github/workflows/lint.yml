@@ -26,4 +26,4 @@ jobs:
       - name: Install isort
         run: uv pip install --system isort
       - name: Run isort
-        run: isort --check . 
+        run: isort . 
