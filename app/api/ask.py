@@ -43,7 +43,8 @@ async def stream_response_with_saving(final_prompt, session_id, query):
 @router.post("/ask/stream")
 async def ask_q(input: QueryInput):
     """
-    Handle the user's question, retrieve context, generate a response, and log the interaction.
+    Handle the user's question, retrieve context, generate a response,
+    and log the interaction.
 
     Args:
         input (QueryInput): The user's question.
