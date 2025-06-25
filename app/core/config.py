@@ -1,4 +1,5 @@
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -15,7 +16,7 @@ LOG_PATH = "chat_log.csv"
 
 # embedding.py 관련 설정
 MAX_TOKENS = 8000
-CHUNK_SIZE = 7000 
+CHUNK_SIZE = 7000
 ENBEDDING_MODEL = "text-embedding-3-small"
 RERANKING_MODEL = "BAAI/bge-reranker-base"
 

@@ -1,17 +1,18 @@
-from openai import AsyncOpenAI
+from core import get_chroma_collections
+from core.config import OPEN_AI_API_KEY
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from models import QueryInput
-from core import get_chroma_collections
-from services import retrieve_context
-from services import get_session_history
-from services import rewrite_if_needed
+from openai import AsyncOpenAI
+from services import (
+    generate_response,
+    get_session_history,
+    retrieve_context,
+    rewrite_if_needed,
+    save_session,
+)
 from services.prompting import build_history_prompt, build_system_prompt
-from services import save_session
-from services import generate_response
 from utils import is_reject_message
-
-from core.config import OPEN_AI_API_KEY
 
 router = APIRouter()
 client = AsyncOpenAI(api_key=OPEN_AI_API_KEY)
@@ -33,7 +34,7 @@ async def stream_response_with_saving(final_prompt, session_id, query):
 
     # history save reject filter
     if not is_reject_message(full_response):
-        # save the message    
+        # save the message
         await save_session(session_id, '사용자', message=query)
         await save_session(session_id, '상담원', message=full_response)
 
@@ -58,15 +59,14 @@ async def ask_q(input: QueryInput):
     history = await get_session_history(session_id)
     collections = await get_chroma_collections()
     context = await retrieve_context(query, collections)
-    
+
     # Build the prompt for the response
     history_prompt = build_history_prompt(history)
     system_prompt = build_system_prompt(context, rewrited_query, history_prompt)
     print(system_prompt)
     return StreamingResponse(
-        stream_response_with_saving(system_prompt, session_id, query), 
+        stream_response_with_saving(system_prompt, session_id, query),
         media_type="text/plain"
         )
-    
 
-    
+

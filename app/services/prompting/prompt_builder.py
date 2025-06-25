@@ -1,6 +1,6 @@
-from string import Template
-from functools import lru_cache
 import os
+from functools import lru_cache
+from string import Template
 
 TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "../../utils/templates/system_prompt.txt")
 
@@ -11,7 +11,7 @@ def load_template() -> Template:
 
 def build_system_prompt(context: str, question: str, history_prompt:str) -> str:
     """네이버 스마트스토어 상담원용 시스템 프롬프트 생성"""
-    template = template = load_template()   
+    template = template = load_template()
     return template.safe_substitute(context=context, question=question, history_prompt=history_prompt)
 
 def build_history_prompt(history: list[dict]) -> str:

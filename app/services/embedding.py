@@ -1,10 +1,10 @@
 import asyncio
-import numpy as np
-from tqdm.asyncio import tqdm_asyncio
 from asyncio import Semaphore
-from core.config import MAX_TOKENS, CHUNK_SIZE, ENBEDDING_MODEL
 
+import numpy as np
 import tiktoken  # 토큰 계산을 위한 모듈
+from core.config import CHUNK_SIZE, ENBEDDING_MODEL, MAX_TOKENS
+from tqdm.asyncio import tqdm_asyncio
 
 # 비동기 클라이언트 및 설정
 semaphore = Semaphore(5)

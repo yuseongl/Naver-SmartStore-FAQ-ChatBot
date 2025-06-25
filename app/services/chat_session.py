@@ -1,7 +1,13 @@
-import redis
 import json
-import os
-from core.config import REDIS_HOST,REDIS_PORT, REDIS_DB, SESSION_KEY_PREFIX, MAX_SESSION_LENGTH
+
+import redis
+from core.config import (
+    MAX_SESSION_LENGTH,
+    REDIS_DB,
+    REDIS_HOST,
+    REDIS_PORT,
+    SESSION_KEY_PREFIX,
+)
 
 redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 

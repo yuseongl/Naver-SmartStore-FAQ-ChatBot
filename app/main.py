@@ -1,6 +1,6 @@
-from fastapi import FastAPI
 from api import ask, logs
 from dotenv import load_dotenv
+from fastapi import FastAPI
 
 load_dotenv()
 

@@ -1,6 +1,7 @@
-import streamlit as st
-import requests
 import uuid
+
+import requests
+import streamlit as st
 
 st.set_page_config(page_title="Cox Chatbot", layout="wide")
 st.title("🧠 Cox Chatbot")
@@ -35,7 +36,7 @@ if question:
         with requests.post(
             "http://localhost:8000/ask/stream",
             json={
-                "session_id": st.session_state.session_id, 
+                "session_id": st.session_state.session_id,
                 "question": question
                 },
             stream=True,
@@ -80,4 +81,4 @@ if st.sidebar.button("로그 불러오기"):
 # 이 앱은 사용자가 질문을 입력하고 AI의 답변과 참고 문서를 보여줍니다.
 # 또한, 사이드바에서 로그를 조회할 수 있는 기능을 제공합니다.
 # 이 앱은 FastAPI 서버와 통신하여 질문을 처리하고 로그를 조회합니다.
-# Streamlit 앱은 사용자가 질문을 입력하고 AI의 답변과 참고 문서를 보여줍니다.           
+# Streamlit 앱은 사용자가 질문을 입력하고 AI의 답변과 참고 문서를 보여줍니다.

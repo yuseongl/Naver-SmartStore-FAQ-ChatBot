@@ -1,7 +1,9 @@
 import csv
 import datetime
 import os
+
 from core.config import LOG_PATH
+
 
 def save_log(question: str, context: str, response: str):
     """

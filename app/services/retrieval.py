@@ -1,14 +1,15 @@
 
-import torch
 import asyncio
+
 import numpy as np
+import torch
+from core.config import RERANKING_MODEL
 from rank_bm25 import BM25Okapi
 from sentence_transformers import CrossEncoder
-from core.config import RERANKING_MODEL
 
 # CrossEncoder 로드
 reranker = CrossEncoder(
-    RERANKING_MODEL, 
+    RERANKING_MODEL,
     device="cuda" if torch.cuda.is_available() else "cpu"
     )
 
@@ -43,7 +44,7 @@ async def retrieve_context(query: str, collections: list, top_k: int = 10, top_n
         str: Concatenated top_n document texts.
     """
     from . import get_all_embeddings_async
-    
+
     _init_bm25(collections[1])  # Initialize BM25 with the full collection
 
     # 임베딩으로 top_k 문서 검색
@@ -59,14 +60,14 @@ async def retrieve_context(query: str, collections: list, top_k: int = 10, top_n
     bm25_docs = [_all_docs[i] for i in top_indices]
     if not bm25_docs:
         return "No relevant documents found."
-    
+
     combined = []
     for doc in bm25_docs + sem_docs:
         if doc not in combined:
             combined.append(doc)
         if not combined:
             return "No relevant documents found."
-    
+
     # 3. CrossEncoder로 리랭킹킹
     query_doc_pairs = [(query, doc) for doc in combined]
     scores = await loop.run_in_executor(None, reranker.predict, query_doc_pairs)

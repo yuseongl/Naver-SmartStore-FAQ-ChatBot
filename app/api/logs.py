@@ -1,5 +1,5 @@
-from fastapi import APIRouter
 from core import get_logs
+from fastapi import APIRouter
 
 router = APIRouter()
 
