@@ -22,14 +22,14 @@ dev = [
 ]
 
 [tool.black]
-line-length = 110
+line-length = 120
 
 [tool.isort]
 profile = "black"
 
 [tool.ruff]
 select = ["E", "F", "I", "W"]
-line-length = 110
+line-length = 120
 
 [tool.setuptools.packages.find]
 include = ["app*", "frontend*"]
