@@ -2,14 +2,8 @@ import os
 import re
 from string import Template
 
-from core.config import OPEN_AI_API_KEY
-from openai import AsyncOpenAI
+TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "../", "utils", "templates", "rewrite_prompt.txt")
 
-TEMPLATE_PATH = os.path.join(
-    os.path.dirname(__file__), "../", "utils", "templates", "rewrite_prompt.txt"
-)
-
-client = AsyncOpenAI(api_key=OPEN_AI_API_KEY)
 KEYWORDS = [
     r"\b스마트\s?스토어\b",
     r"\b스토어센터\b",
@@ -19,25 +13,34 @@ KEYWORDS = [
 _pat = re.compile("|".join(KEYWORDS), re.I)
 
 
-def build_write_prompt(context: str) -> str:
-    """네이버 스마트스토어 상담원용 시스템 프롬프트 생성"""
-    with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
-        template = Template(f.read())
-    return template.safe_substitute(context=context)
+class RewriterService:
+    """
+    Service for rewriting user queries to match the context of Naver Smart Store.
+    It uses OpenAI's API to generate a more suitable query if the original does not match predefined keywords.
+    """
 
+    def __init__(self, client):
+        self.client = client
+        if not client:
+            raise ValueError("OpenAI client is required for RewriterService.")
 
-async def _rewriter(query: str) -> str:
-    resp = await client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": query}],
-        max_tokens=200,
-    )
+    def build_write_prompt(self, context: str) -> str:
+        """네이버 스마트스토어 상담원용 시스템 프롬프트 생성"""
+        with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
+            template = Template(f.read())
+        return template.safe_substitute(context=context)
 
-    return resp.choices[0].message.content.strip()
+    async def _rewriter(self, query: str) -> str:
+        resp = await self.client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": query}],
+            max_tokens=200,
+        )
 
+        return resp.choices[0].message.content.strip()
 
-async def rewrite_if_needed(q: str) -> str:
-    if _pat.search(q):
-        return q
+    async def rewrite_if_needed(self, q: str) -> str:
+        if _pat.search(q):
+            return q
 
-    return await _rewriter(build_write_prompt(q))
+        return await self._rewriter(self.build_write_prompt(context=q))

@@ -1,24 +1,15 @@
-from core import get_chroma_collections
-from core.config import OPEN_AI_API_KEY
-from fastapi import APIRouter
+from containers import Container
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from models import QueryInput
-from openai import AsyncOpenAI
-from services import (
-    generate_response,
-    get_session_history,
-    retrieve_context,
-    rewrite_if_needed,
-    save_session,
-)
-from services.prompting import build_history_prompt, build_system_prompt
-from utils import is_reject_message
 
 router = APIRouter()
-client = AsyncOpenAI(api_key=OPEN_AI_API_KEY)
 
 
-async def stream_response_with_saving(final_prompt, session_id, query):
+async def stream_response_with_saving(
+    final_prompt, session_id, query, generate_response, save_session, is_reject_message
+):
     """
     Generate a response token by token and save the session.
     Args:
@@ -34,14 +25,25 @@ async def stream_response_with_saving(final_prompt, session_id, query):
         yield token
 
     # history save reject filter
-    if not is_reject_message(full_response):
+    if not is_reject_message(text=full_response):
         # save the message
         await save_session(session_id, "사용자", message=query)
         await save_session(session_id, "상담원", message=full_response)
 
 
 @router.post("/ask/stream")
-async def ask_q(input: QueryInput):
+@inject
+async def ask_q(
+    input: QueryInput,
+    retriever=Depends(Provide[Container.retriever]),
+    embedding_service=Depends(Provide[Container.embedding_service]),
+    session_service=Depends(Provide[Container.chat_session_service]),
+    OpenAIClient=Depends(Provide[Container.OpenAIClient]),
+    rewriter=Depends(Provide[Container.rewriter]),
+    prompt_builder=Depends(Provide[Container.prompt_builder]),
+    chroma_client=Depends(Provide[Container.chroma_client]),
+    RejectFilter=Depends(Provide[Container.RejectFilter]),
+):
     """
     Handle the user's question, retrieve context, generate a response,
     and log the interaction.
@@ -56,18 +58,29 @@ async def ask_q(input: QueryInput):
     session_id = input.session_id
 
     # rewrite the user's question
-    rewrited_query = await rewrite_if_needed(query)
+    rewrited_query = await rewriter.rewrite_if_needed(query)
     # Save the user's question in the session
     # Retrieve context from the Chroma collection
-    history = await get_session_history(session_id)
-    collections = await get_chroma_collections()
-    context = await retrieve_context(query, collections)
+    history = await session_service.get_session_history(session_id)
+    collections = await chroma_client.get_chroma_collections(embedding_service.get_all_embeddings_async)
+    context = await retriever.retrieve_context(
+        query=query,
+        collections=collections,
+        get_all_embeddings_async=embedding_service.get_all_embeddings_async,
+    )
 
     # Build the prompt for the response
-    history_prompt = build_history_prompt(history)
-    system_prompt = build_system_prompt(context, rewrited_query, history_prompt)
+    history_prompt = prompt_builder.build_history_prompt(history)
+    system_prompt = prompt_builder.build_system_prompt(context, rewrited_query, history_prompt)
     print(system_prompt)
     return StreamingResponse(
-        stream_response_with_saving(system_prompt, session_id, query),
+        stream_response_with_saving(
+            final_prompt=system_prompt,
+            session_id=session_id,
+            query=query,
+            generate_response=OpenAIClient.generate_response,
+            save_session=session_service.save_session,
+            is_reject_message=RejectFilter.is_reject_message,
+        ),
         media_type="text/plain",
     )

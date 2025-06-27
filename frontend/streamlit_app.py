@@ -50,9 +50,7 @@ if question:
                 message_placeholder.markdown(full_response)
 
     # 대화 기록 저장
-    st.session_state.chat_history.append(
-        {"role": "assistant", "content": full_response}
-    )
+    st.session_state.chat_history.append({"role": "assistant", "content": full_response})
 
 # 사이드바 - 로그
 st.sidebar.title("📜 로그 기록")

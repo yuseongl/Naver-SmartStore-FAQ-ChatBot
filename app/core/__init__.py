@@ -1,10 +1,9 @@
 from . import config
-from .chroma_client import get_chroma_collections
-from .logger import get_logs, save_log
+from .chroma_client import ChromaClient
+from .logger import Logger
 
 __all__ = [
-    "get_chroma_collections",
+    "ChromaClient",
     "config",
-    "get_logs",
-    "save_log"
+    "Logger",
 ]
