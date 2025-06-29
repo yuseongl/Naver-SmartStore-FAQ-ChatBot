@@ -31,7 +31,7 @@ class ChatSessionService:
             response (str): AI's response.
         """
         session_key = await self._session(session_id)
-        messages = {"role": role, "message": message}
+        messages = {"role": role, "content": message}
         self.redis_client.rpush(session_key, json.dumps(messages, ensure_ascii=False))
         self.redis_client.ltrim(
             session_key, 0, self.max_session_length - 1

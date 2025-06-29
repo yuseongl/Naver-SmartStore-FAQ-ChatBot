@@ -13,20 +13,38 @@ class prompt_builder:
         with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
             return Template(f.read())
 
-    def build_system_prompt(self, context: str, question: str, history_prompt: str) -> str:
-        """네이버 스마트스토어 상담원용 시스템 프롬프트 생성"""
-        template = template = self.load_template()
-        return template.safe_substitute(context=context, question=question, history_prompt=history_prompt)
+    def build_system_prompt(self, context: str) -> dict:
+        """
+        네이버 스마트스토어 상담원용 시스템 메시지를 반환합니다.
+        messages 배열에 바로 쓸 수 있도록 role/content 구조를 반환합니다.
+        """
+        template = self.load_template()
+        system_content = template.safe_substitute(context=context)
+        return {
+            "role": "system",
+            "content": system_content,
+        }
 
     def build_history_prompt(self, history: list[dict]) -> str:
-        """Redis에서 불러온 대화 기록을 프롬프트 문자열로 정리"""
-        context_lines = ""
-        for msg in history:
-            role = msg.get("role", "user").capitalize()
-            message = msg.get("message", "")
-            context_lines += f"{role}: {message}\n"
-            break
-        return context_lines.strip()
+        """내부 히스토리(history)를 OpenAI messages로 변환"""
+        messages = []
+        recent_history = history[-5:]
+        for msg in recent_history:
+            messages.append({
+                "role": msg.get("role", "user"),
+                "content": msg.get("message", msg.get("content", ""))
+            })
+        return messages
+    
+    def build_user_prompt(self, query: str) -> str:
+        """
+        사용자 질문을 OpenAI messages로 변환합니다.
+        query: 사용자의 질문
+        """
+        return {
+            "role": "user",
+            "content": query,
+        }
 
 
 # app/api/ask.py 내 사용 예시:

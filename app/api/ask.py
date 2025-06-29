@@ -1,3 +1,5 @@
+import json
+
 from containers import Container
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
@@ -29,6 +31,22 @@ async def stream_response_with_saving(
         # save the message
         await save_session(session_id, "사용자", message=query)
         await save_session(session_id, "상담원", message=full_response)
+
+
+async def event_stream(prompt: str, rewrited_query: str, generate_response: str, save_session, session_id: int, is_reject_message):
+    # Function Calling 기반 구조체 스트리밍(답변+유도질문)
+    full_response = ""
+    async for partial in generate_response(prompt):
+        if "answer" in partial:
+            full_response = partial["answer"]
+        # partial: {"answer": ...} 또는 {"follow_up": ...} (또는 둘 다)
+        yield f"data: {json.dumps(partial, ensure_ascii=False)}\n\n"
+    
+    # history save reject filter
+    if not is_reject_message(text=full_response):
+        # save the message
+        await save_session(session_id, "user", message=rewrited_query)
+        await save_session(session_id, "assistant", message=full_response)
 
 
 @router.post("/ask/stream")
@@ -71,16 +89,18 @@ async def ask_q(
 
     # Build the prompt for the response
     history_prompt = prompt_builder.build_history_prompt(history)
-    system_prompt = prompt_builder.build_system_prompt(context, rewrited_query, history_prompt)
-    print(system_prompt)
+    system_prompt = prompt_builder.build_system_prompt(context)
+    user_prompt = prompt_builder.build_user_prompt(rewrited_query)
+    final_prompt = [system_prompt] + history_prompt + [user_prompt]
+    print(f"Final Prompt: {final_prompt}")
     return StreamingResponse(
-        stream_response_with_saving(
-            final_prompt=system_prompt,
-            session_id=session_id,
-            query=query,
-            generate_response=OpenAIClient.generate_response,
-            save_session=session_service.save_session,
-            is_reject_message=RejectFilter.is_reject_message,
+        event_stream(
+            final_prompt, 
+            rewrited_query,
+            OpenAIClient.stream_answer_and_followup,
+            session_service.save_session,
+            session_id,
+            RejectFilter.is_reject_message,
         ),
         media_type="text/plain",
     )
