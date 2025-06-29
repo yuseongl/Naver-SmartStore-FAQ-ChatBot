@@ -30,12 +30,9 @@ class prompt_builder:
         messages = []
         recent_history = history[-5:]
         for msg in recent_history:
-            messages.append({
-                "role": msg.get("role", "user"),
-                "content": msg.get("message", msg.get("content", ""))
-            })
+            messages.append({"role": msg.get("role", "user"), "content": msg.get("message", msg.get("content", ""))})
         return messages
-    
+
     def build_user_prompt(self, query: str) -> str:
         """
         사용자 질문을 OpenAI messages로 변환합니다.

@@ -33,7 +33,9 @@ async def stream_response_with_saving(
         await save_session(session_id, "상담원", message=full_response)
 
 
-async def event_stream(prompt: str, rewrited_query: str, generate_response: str, save_session, session_id: int, is_reject_message):
+async def event_stream(
+    prompt: str, rewrited_query: str, generate_response: str, save_session, session_id: int, is_reject_message
+):
     # Function Calling 기반 구조체 스트리밍(답변+유도질문)
     full_response = ""
     async for partial in generate_response(prompt):
@@ -41,7 +43,7 @@ async def event_stream(prompt: str, rewrited_query: str, generate_response: str,
             full_response = partial["answer"]
         # partial: {"answer": ...} 또는 {"follow_up": ...} (또는 둘 다)
         yield f"data: {json.dumps(partial, ensure_ascii=False)}\n\n"
-    
+
     # history save reject filter
     if not is_reject_message(text=full_response):
         # save the message
@@ -95,7 +97,7 @@ async def ask_q(
     print(f"Final Prompt: {final_prompt}")
     return StreamingResponse(
         event_stream(
-            final_prompt, 
+            final_prompt,
             rewrited_query,
             OpenAIClient.stream_answer_and_followup,
             session_service.save_session,

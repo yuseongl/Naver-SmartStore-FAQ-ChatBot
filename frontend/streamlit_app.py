@@ -1,7 +1,7 @@
-import uuid
-import json
 import io
+import json
 import re
+import uuid
 
 import requests
 import streamlit as st
@@ -44,12 +44,12 @@ if question:
             if response.status_code != 200:
                 message_placeholder.error("⚠️ 질문 처리 중 오류 발생")
             else:
-                
+
                 # 안전하게 한 줄씩 처리
                 text_stream = io.TextIOWrapper(response.raw, encoding="utf-8")
                 for line in text_stream:
                     if line.startswith("data:"):
-                        chunk = line[len("data:"):].strip()
+                        chunk = line[len("data:") :].strip()
                         # partial 토큰 (따옴표로 감싼 단어)
                         try:
                             data = json.loads(chunk)
@@ -58,11 +58,11 @@ if question:
                                 # answer는 누적(스트리밍)로 붙이기보다 최신값(최종결과)로 갱신이 더 안전함
                                 # 혹시 토큰 단위로 잘라올 수도 있으므로 +=로 붙여도 무방
                                 full_answer = data["answer"]
-                                answer_lines = re.split(r'\s*(\d+[.)])\s*', full_answer)
+                                answer_lines = re.split(r"\s*(\d+[.)])\s*", full_answer)
                                 parsed_lines = []
                                 buffer = ""
                                 for part in answer_lines:
-                                    if re.match(r'\d+\)', part):
+                                    if re.match(r"\d+\)", part):
                                         if buffer:
                                             parsed_lines.append(buffer.strip())
                                         buffer = part
@@ -76,7 +76,7 @@ if question:
                                 message_placeholder.markdown(full_answer)
                             if "follow_up" in data:
                                 full_followup = data["follow_up"]
-                        except Exception as e:
+                        except Exception:
                             # 일부 incomplete chunk면 그냥 무시
                             pass
                 message_placeholder.markdown(full_answer)

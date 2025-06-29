@@ -28,8 +28,7 @@ class EmbeddingService:
     def split_text_into_chunks(self, text: str, chunk_token_limit: int) -> list[str]:
         tokens = self.encoding.encode(text)
         return [
-            self.encoding.decode(tokens[i : i + chunk_token_limit])
-            for i in range(0, len(tokens), chunk_token_limit)
+            self.encoding.decode(tokens[i : i + chunk_token_limit]) for i in range(0, len(tokens), chunk_token_limit)
         ]
 
     # 벡터 정규화
@@ -38,18 +37,14 @@ class EmbeddingService:
         return (np.array(vec) / norm).tolist() if norm != 0 else vec
 
     # 개별 텍스트 또는 분할된 청크들을 비동기로 임베딩
-    async def get_embedding_with_chunking(
-        self, text: str, max_retries: int = 3, timeout: int = 10
-    ) -> list[float]:
+    async def get_embedding_with_chunking(self, text: str, max_retries: int = 3, timeout: int = 10) -> list[float]:
         if self.count_tokens(text) <= self.max_tokens:
             embedding = await self.get_embedding(text, max_retries, timeout)
             return embedding
 
         # 청크 분할 후 각 청크 임베딩 → 평균 벡터 반환
         chunks = self.split_text_into_chunks(text, self.chunk_size)
-        chunk_embeddings = await asyncio.gather(
-            *[self.get_embedding(chunk, max_retries, timeout) for chunk in chunks]
-        )
+        chunk_embeddings = await asyncio.gather(*[self.get_embedding(chunk, max_retries, timeout) for chunk in chunks])
         valid_embeddings = [e for e in chunk_embeddings if e]
         if not valid_embeddings:
             return []
